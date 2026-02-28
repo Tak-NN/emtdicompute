@@ -1,91 +1,117 @@
-# How to reproduce the analyses presented in the original article?
- 
-Reproduction procedures of analyses in the original article [(URL, unpublished)] are described below. 
+# How to Reproduce the Analyses Presented in the Original Article
+
+Reproduction procedures for the analyses in the original article [(URL, unpublished)] are described below.
 
 ## Preparation
-### 1. Create a virtual environment and install required packages
-At first, creaate a virtual environment and install `emtdicompute` package. See `README.md` for the installation.
 
-In addition, `matplotlib` and `seaborn` is required.
+### 1. Create a virtual environment and install required packages
+
+First, create a virtual environment and install the `emtdicompute` package. See `README.md` for installation instructions.
+In addition, `matplotlib` and `seaborn` are required.
+
 ```bash
 pip install matplotlib seaborn
 ```
+
 Don't forget to activate the virtual environment.
 
 ### 2. Copy folders
-Once you create the virtual environment, copy the folders and files under `reproduction/` into your environment. 
 
-## Validation (Section 2.2. Validation of the tool)
+Once you have created the virtual environment, copy the folders and files under `reproduction/` into your environment.
 
-The required files are located under `validation/`. By running following commands, you can reproduce the validation analysis.
-```python
+## Validation (Section 2.2: Validation of the Tool)
+
+The required files are located under `validation/`. By running the following commands, you can reproduce the validation analysis.
+
+```bash
 cd validation
 python ./validation.py
 ```
 
 You will get the following result files under `validation/outputs/`:
+
 - `01_cube_validation_d50.csv`
 - `02_tallcube_validation_d50.csv`
-- `03_widecube_validation_d50.csv` 
+- `03_widecube_validation_d50.csv`
 
-By default, the sampling density is set to 50, and you can modify it by replacing the value of `DENSITY` in the script (line 18). You can check that varying the sapling density does not change the computed values.
+By default, the sampling density is set to 50. You can modify it by changing the value of `DENSITY` in the script (line 18). You can verify that varying the sampling density does not affect the computed values.
 
+## Sampling Density Determination (Section 2.3: Practical Demonstration of Sampling Density Determination)
 
+The required files are located under `sampling_density/`. By running the following commands, you can reproduce the sampling density determination process.
 
+**CAUTION:**
+This process outputs a large number of CSV files and is relatively time-consuming compared to [Validation](#validation-section-22-validation-of-the-tool). If you want to reduce the processing time and the number of output files, uncomment line 27 of `sdd.py` and change the number after `":"`, e.g., `seeds = seeds[:20]`. This value controls the number of iterations of visible volume computation with different sampling seeds.
 
-## Sampling density determination (Section 2.3. A practical demonstration of sampling density determination)
-
-The required files are located under `sampling_density/`. By running following commands, you can reproduce the sampling density determination process.
-
-**CAUTION:** \
-This process outputs a large number of CSV files and is relatively time-consuming, compared to [Validation](#validation-section-22-validation-of-the-tool). If you want to reduce the processing time and the number of output files, uncomment line 27 of `sdd.py` and change the number right after the ":", e.g., `seeds = seeds[:20]`. It is the number of iteration of visible volume computation with different sampling seeds.
-
-
-```python
+```bash
 cd sampling_density
 python ./sdd.py
 ```
-Once the process completed, draw a plot of the visible volume convergence.
-```python
+
+Once the process is complete, draw a plot of the visible volume convergence.
+
+```bash
 python ./plot.py
 ```
 
-You will get a plot image of computed visible volumes to varying sampling densities. The image file will be saved in `sampling_density/outputs/plot.pdf`.
+You will get a plot image of computed visible volumes at varying sampling densities. The image will be saved as `sampling_density/outputs/plot.pdf`.
 
-**Tips:** \
-This procedure can be re-used for your project, by replacing input OBJ and CSV files. Put your building model (OBJ) in `sampling_density/` and replace `OBJ_FILENAME` in `objname_setting.py` with your OBJ filename. In the same manner, replace `cam_04.csv` with the location of a vantage point in your building, and modify `VPT_FILENAME` in `objname_setting.py`. In addition, you can change the range and step of sampling densities modifying `densities` in the line 19 of `sdd.py` script.
+**Tips:**
+This procedure can be reused for your own project by replacing the input OBJ and CSV files. Place your building model (OBJ) in `sampling_density/` and replace `OBJ_FILENAME` in `obj_vpt_setting.py` with your OBJ filename. Similarly, replace `cam_04.csv` with the location of a vantage point in your building, and update `VPT_FILENAME` in `obj_vpt_setting.py`. You can also change the range and step of sampling densities by modifying `densities` on line 19 of `sdd.py`.
 
+## Case Study (Section 2.4: Case Study)
 
-## Case study (Section 2.4. A case study)
+The required files are located under `case_study/`.
 
-The required files are located under `case_study/`. 
+### Point Analysis
 
-### Point analysis
-
-You have to run the following commands.
-```python 
+```bash
 cd case_study/
 python ./point_analysis.py
 ```
 
-You will get...
+The outputs will appear in `case_study/outputs/point_analysis/`.
 
-### Path analysis
+To obtain an arrayed plot of the results, run:
 
-You have to run the following commands.
-```python 
+```bash
+python ./plot_point_analysis.py
+```
+
+The figure will be saved as `case_study/outputs/point_analysis/cs_point_analysis_plot.pdf`.
+
+You can also get visualisations of the visible sampled points from the vantage point by uncommenting lines 46 to 53 in `point_analysis.py`. Press `Enter` when the terminal asks `force_usecache? Type "False" or "True"`.
+
+- Modify the index of `VANTAGE_PATHS[0]` in line 47 to change the view orientation.
+- Setting `mode = 'td'` visualises the visible sampled points on horizontal surfaces. Green (red) points are on the bottom (top) surfaces.
+- Setting `mode = 'vh'` visualises all visible sampled points. Green (red) points are on vertical (horizontal) surfaces.
+
+### Path Analysis
+
+```bash
 cd case_study/
 python ./path_analysis.py
 ```
 
-You will get...
+The outputs will appear in `case_study/outputs/path_analysis/`.
 
-### Field analysis
+To obtain an arrayed plot of the results, run:
 
-You have to run the following commands.
-```python 
+```bash
+python ./plot_path_analysis.py
+```
+
+The figure will be saved as `case_study/outputs/path_analysis/cs_path_analysis_plot.pdf`.
+
+### Field Analysis
+
+Run the following commands:
+
+```bash
 cd case_study/
 python ./field_analysis.py
 ```
 
-You will get...
+Pop-up windows illustrating the results will appear several times. Close each window to proceed with the analysis.
+
+Finally, images for each level and metric will be saved under `outputs/field_analysis/`. The suffixes at the end of each filename indicate the metric: `vh` = v-h ratio, `td` = t-d ratio, `vj` = vertical jaggedness, and `vv` = visible volume.
