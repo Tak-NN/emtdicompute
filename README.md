@@ -17,7 +17,7 @@ An article introducing this package is available here: [unpblished].
 ### Install the minimum core dependencies manually
 
 ```bash
-pip install trimesh open3d pandas numpy embreex
+pip install trimesh open3d pandas numpy embreex rtree
 ```
 
 Note: You can run `pip install trimesh[easy]` instead of `pip install trimesh`.
@@ -65,3 +65,4 @@ To reproduce the analyses presented in the original article, you can use the cod
 
 - v1.0 (2026-02-12)
   - Initial public release.
+
