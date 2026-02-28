@@ -54,16 +54,15 @@ pip install .
 python -c "import emtdicompute; print('emtdicompute import: OK')"
 ```
 
-# Sample Codes
-Sample codes are provided under `sample_codes/`.
-
 # Reproduction Procedure
 
 To reproduce the analyses presented in the original article, you can use the code and files under `reproduction/`.
+The scripts are also helpful as the sample codes.
 
 # Updates
 
 - v1.0 (2026-02-12)
   - Initial public release.
+
 
 
