@@ -61,7 +61,7 @@ The scripts are also helpful as the sample codes.
 
 # Updates
 
-- v1.0 (2026-02-12)
+- v1.0.0 (2026-02-12)
   - Initial public release.
 
 
