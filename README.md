@@ -4,7 +4,7 @@
 It supports point-, path-, and field-based analyses while incorporating a limited field of view (FOV).
 The package is designed for reproducible research workflows in architectural analysis, spatial cognition studies, and indoor navigation experiments.
 
-An article introducing this package is available here: [unpblished].
+An article introducing this package is available here: [Full-text](https://www.researchgate.net/publication/416018981_A_dynamic_and_viewing-direction-aware_3D_visuospatial_analysis_framework_for_indoor_environments_based_on_embodied_3D_isovist) / [Publisher](https://doi.org/10.1177/23998083261496137)
 
 # Installation Guide
 
