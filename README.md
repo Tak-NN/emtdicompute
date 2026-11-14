@@ -155,7 +155,7 @@ visibility calculation. Manually constructed five-argument `SampleMesh` objects
 remain supported; provide valid `face_indices` to enable the faster calculation.
 
 # Sample Codes
-Example scripts are available in `sample_codes/`.
+Example scripts are available in `reproduction/`.
 
 # Reproduction Procedure
 
