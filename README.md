@@ -1,68 +1,33 @@
-# Overview
+# emtdicompute GPU
 
-*emtdicompute* is a Python package for computing Embodied 3D Isovist metrics in three-dimensional built environments.
-It supports point-, path-, and field-based analyses while incorporating a limited field of view (FOV).
-The package is designed for reproducible research workflows in architectural analysis, spatial cognition studies, and indoor navigation experiments.
+This `v3.0.0-gpu-acceleration` branch builds **emtdicompute 3.0.0-gpu**, the CUDA/OptiX edition of the Embodied 3D Isovist package. The Python import name remains `emtdicompute`. The CPU-parallel edition is released separately as `emtdicompute 2.0.0`.
 
-An article introducing this package is available here: [Full-text](https://www.researchgate.net/publication/416018981_A_dynamic_and_viewing-direction-aware_3D_visuospatial_analysis_framework_for_indoor_environments_based_on_embodied_3D_isovist) / [Publisher](https://doi.org/10.1177/23998083261496137)
+It evaluates a limited field of view in a three-dimensional building, supporting point, path, and field analyses. FOV filtering, ray preparation, closest-hit intersection, visible-point selection, and metric calculation run on the GPU. File loading, mesh sampling, camera setup, orchestration, and CSV output remain on the CPU.
 
-# Installation Guide
+The article introducing the framework is available at [Full-text](https://www.researchgate.net/publication/416018981_A_dynamic_and_viewing-direction-aware_3D_visuospatial_analysis_framework_for_indoor_environments_based_on_embodied_3D_isovist) / [Publisher](https://doi.org/10.1177/23998083261496137).
 
-## Requirements
-- Python 3.12
-- pip
-- (Optional) CUDA Toolkit, if you want to use an NVIDIA GPU
+# Installation and use
 
-## Dependencies
-### Install the minimum core dependencies manually
+See [the GPU installation and API guide](package_main/README.md) for platform requirements, wheel/source installation, native builds, and examples.
 
-```bash
-pip install trimesh open3d pandas numpy embreex rtree scipy
-```
+- Distribution: `emtdicompute-gpu`; import: `emtdicompute`.
+- Requires CUDA-enabled PyTorch and an NVIDIA GPU/driver supporting the OptiX backend.
+- Tested on Windows x64, Python 3.12, RTX 5070, driver 610.88, PyTorch 2.9.1+cu130, CUDA Toolkit 12.8, and OptiX 9.1 headers.
+- This GPU edition has no CPU visibility fallback and does not require Embree/embreex.
+- Use separate environments for the CPU and GPU distributions, which share the import namespace.
 
-Note: You can run `pip install trimesh[easy]` instead of `pip install trimesh`.
+# Visibility computation
 
-In addition, install PyTorch manually based on your environment:
-- https://pytorch.org/get-started/locally/
+A reusable `GpuSession` keeps the point cloud, normals, labels, source triangle IDs, and OptiX acceleration structure on the selected CUDA device. Batch calls reuse one session across chunks. OptiX accesses PyTorch-owned GPU memory on the caller's current CUDA stream. Large ray and intersection arrays do not pass through the CPU.
 
-## Installing the **emtdicompute** package from this repository
-This repository contains the package source under `package_main/`.
+Queries return the closest triangle ID and distance, with two-sided triangles. A hit on the sampled point's source triangle is visible; other hits are compared with the point distance using the existing `1e-4` tolerance. Adjacent coplanar triangles remain separate. The validated two-stage direction normalization and scene transformation are retained. The metric definitions and existing float32 PyTorch aggregations are unchanged.
 
-1. Move to the package directory:
+`SampleMesh.face_indices` is required for GPU visibility. `mesh_sampling()` supplies it for new point clouds and verified caches. Legacy caches are reused only when source triangle IDs can be verified without changing their points. Regenerate an unverified cache with `force_recompute=True`; this edition does not silently use the old CPU visibility algorithm.
 
-```bash
-cd package_main
-```
+# Sample codes and reproduction
 
-2. Install the package.
-
-Editable installation (recommended for development):
-
-```bash
-pip install -e .
-```
-
-Alternatively, perform a standard installation:
-
-```bash
-pip install .
-```
-
-3. Verify the installation:
-
-```bash
-python -c "import emtdicompute; print('emtdicompute import: OK')"
-```
-
-# Reproduction Procedure
-
-To reproduce the analyses presented in the original article, you can use the code and files under `reproduction/`.
-The scripts are also helpful as the sample codes.
+Example scripts are in `sample_codes/`. The code and data used in the original article are in `reproduction/`. Earlier scripts that explicitly select `device='cpu'` need to select a CUDA device for this edition. Minor triangle-boundary differences from the CPU engine and float32 GPU aggregation variability mean results need not be bit-identical to the original implementation.
 
 # Updates
 
-- v1.0.0 (2026-02-12)
-  - Initial public release.
-
-
-
+- v3.0.0: GPU release with versioned wheel/source distributions, persistent GPU sessions, and the batch cache-selection option. See [release notes](RELEASE_NOTES_v3.0.md).
